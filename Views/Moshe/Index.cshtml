@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Moshe";
+}
+
+<h1>Hello Moshe</h1>
+<input id="inp" />
+<button id="btn">Send</button>
+<ul id="list">
+    
+</ul>
+
+<script>
+    const socket = new WebSocket('ws://localhost:5010/');
+
+    socket.onopen = function (event) {
+        console.log('WebSocket is open now.');
+        // שלח נתונים לשרת אם יש צורך
+        socket.send('Hello Server!');
+    };
+
+    socket.onclose = function (event) {
+        console.log('WebSocket is closed now.');
+    };
+
+    let message;
+    document.getElementById("btn").onclick = function () {
+        message = document.getElementById("inp").value;
+        socket.send(message);
+    }
+
+    socket.onmessage = function (event) {
+        document.getElementById("list").innerHTML += `<li>${event.data}</li>`;
+        console.log('Message from server ', event.data);
+    };
+
+    socket.onerror = function (error) {
+        console.log('WebSocket error: ', error);
+    };
+</script>
+
